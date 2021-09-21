@@ -5,8 +5,10 @@ import com.devsuperior.dscatalog.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -29,5 +31,17 @@ public class CategoryResource
     {
         CategoryDto cat = categoryService.findById(id);
         return ResponseEntity.ok().body(cat);
+    }
+
+    @PostMapping
+    public ResponseEntity<CategoryDto> insert(@RequestBody CategoryDto categoryDto)
+    {
+        categoryDto = categoryService.insert(categoryDto);
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(categoryDto.getId())
+                .toUri();
+        return ResponseEntity.created(uri).body(categoryDto);
     }
 }
