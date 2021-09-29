@@ -2,6 +2,7 @@ package com.devsuperior.dscatalog.services;
 
 import com.devsuperior.dscatalog.Dto.ProductDto;
 import com.devsuperior.dscatalog.entities.Product;
+import com.devsuperior.dscatalog.repositories.CategoryRepository;
 import com.devsuperior.dscatalog.repositories.ProductRepository;
 import com.devsuperior.dscatalog.services.exceptions.DatabaseException;
 import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
@@ -21,6 +22,9 @@ public class ProductService
 {
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     // readOnly -> doesnt "lock" database
     @Transactional(readOnly = true)
@@ -52,7 +56,7 @@ public class ProductService
     public ProductDto insert(ProductDto productDto)
     {
         Product entity = new Product();
-        //entity.setName(productDto.getName());
+        copyDtoToEntity(productDto, entity);
         entity = productRepository.save(entity);
         return new ProductDto(entity);
     }
@@ -63,7 +67,7 @@ public class ProductService
         try
         {
             Product entity = productRepository.getOne(id);
-            //entity.setName(productDto.getName());
+            copyDtoToEntity(productDto, entity);
             entity = productRepository.save(entity);
 
             return new ProductDto(entity);
@@ -88,5 +92,21 @@ public class ProductService
         {
             throw new DatabaseException("Integrity Violation");
         }
+    }
+
+    private void copyDtoToEntity(ProductDto productDto, Product entity)
+    {
+        entity.setName(productDto.getName());
+        entity.setDescription(productDto.getDescription());
+        entity.setDate(productDto.getDate());
+        entity.setPrice(productDto.getPrice());
+        entity.setImgUrl(productDto.getImgUrl());
+
+        entity.getCategories().clear();
+
+        productDto.getCategories().forEach(categoryDto ->
+        {
+            entity.getCategories().add(categoryRepository.getOne(categoryDto.getId()));
+        });
     }
 }
