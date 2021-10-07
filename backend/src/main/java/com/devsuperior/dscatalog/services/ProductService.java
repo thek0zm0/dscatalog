@@ -10,10 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
@@ -28,7 +27,7 @@ public class ProductService
 
     // readOnly -> doesnt "lock" database
     @Transactional(readOnly = true)
-    public Page<ProductDto> findAllPaged(PageRequest pageRequest)
+    public Page<ProductDto> findAllPaged(Pageable pageable)
     {
         /*
         List<Product> list = productRepository.findAll();
@@ -39,7 +38,7 @@ public class ProductService
         }
         */
         return productRepository
-                .findAll(pageRequest)
+                .findAll(pageable)
                 .map(x -> new ProductDto(x));
     }
 
