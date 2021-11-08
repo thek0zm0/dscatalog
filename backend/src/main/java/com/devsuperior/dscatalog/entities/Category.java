@@ -3,17 +3,24 @@ package com.devsuperior.dscatalog.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_category")
 public class Category implements Serializable
 {
     private static final long serialVersionUID = 667922986525075901L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
+    @ManyToMany(mappedBy = "categories")
+    private Set<Product> products = new HashSet<>();
 
     // Auditing
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
@@ -57,6 +64,10 @@ public class Category implements Serializable
     public Instant getUpdatedAt()
     {
         return updatedAt;
+    }
+
+    public Set<Product> getProducts() {
+        return products;
     }
 
     @PrePersist
