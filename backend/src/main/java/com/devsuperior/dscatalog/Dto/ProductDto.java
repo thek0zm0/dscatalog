@@ -3,22 +3,29 @@ package com.devsuperior.dscatalog.Dto;
 import com.devsuperior.dscatalog.entities.Category;
 import com.devsuperior.dscatalog.entities.Product;
 
-import javax.persistence.Column;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ProductDto implements Serializable
 {
     private static final long serialVersionUID = -3986943934046622392L;
     private Long id;
+    @Size(min = 5, max = 60, message = "Deve ter entre 5 e 60 caracteres")
+    @NotBlank(message = "Campo obrigatório")
     private String name;
+    @NotBlank(message = "Campo obrigatório")
     private String description;
+    @Positive(message = "O preço deve ser positivo")
     private Double price;
     private String imgUrl;
+    @PastOrPresent(message = "A data não pode estar no futuro")
     private Instant date; //iso 8601
     private List<CategoryDto> categories = new ArrayList<>();
 

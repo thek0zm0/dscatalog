@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
@@ -34,7 +35,7 @@ public class ProductResource
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> insert(@RequestBody ProductDto productDto)
+    public ResponseEntity<ProductDto> insert(@Validated @RequestBody ProductDto productDto)
     {
         productDto = productService.insert(productDto);
         URI uri = ServletUriComponentsBuilder
@@ -47,7 +48,7 @@ public class ProductResource
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<ProductDto> update(@PathVariable Long id,
-                                              @RequestBody ProductDto productDto)
+                                              @Validated @RequestBody ProductDto productDto)
     {
         productDto = productService.update(id, productDto);
         return ResponseEntity.ok().body(productDto);
